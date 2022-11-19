@@ -138,10 +138,8 @@ public class Model extends Observable {
      * */
     public static boolean emptySpaceExists(Board b) {
         // TODO: Fill in this function.
-        int col;
-        int row;
-        for (col = 0; col < b.size(); col += 1){
-            for (row = 0; row < b.size(); row += 1 ){
+        for (int col = 0; col < b.size(); col += 1){
+            for (int row = 0; row < b.size(); row += 1 ){
                 if (b.tile(col, row) == null){
                     return true;
                 }
@@ -157,11 +155,8 @@ public class Model extends Observable {
      */
     public static boolean maxTileExists(Board b) {
         // TODO: Fill in this function.
-        int col;
-        int row;
-        ;
-        for (row = b.size() - 1; row >= 0; row -= 1) {
-            for (col = 0; col < b.size(); col += 1) {
+        for (int row = b.size() - 1; row >= 0; row -= 1) {
+            for (int col = 0; col < b.size(); col += 1) {
                 Tile t = b.tile(col, row);
                 if ((t != null) && (t.value() == MAX_PIECE)){
                     return true;
@@ -182,6 +177,7 @@ public class Model extends Observable {
         if (emptySpaceExists(b)) {
             return true;
         }
+        // 自己写得很罗里吧嗦，关键在于+1后要在b.size()内的限制可以加在boolean后面
         for (int col = 0; col < b.size() ; col += 1) {
             for (int row = 0; row < b.size(); row += 1) {
                 boolean LeftOrRight = col + 1 < b.size() && b.tile(col, row).value() == b.tile(col + 1, row).value();
