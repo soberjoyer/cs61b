@@ -5,7 +5,7 @@ import java.util.Observable;
 
 
 /** The state of a game of 2048.
- *  @author TODO: YOUR NAME HERE
+ *  @author TODO: CHEN XIAOQI
  */
 public class Model extends Observable {
     /** Current contents of the board. */
@@ -109,43 +109,54 @@ public class Model extends Observable {
     public boolean tilt(Side side) {
         boolean changed;
         changed = false;
-        for(int c = 0; c < board.size(); c += 1){
-            for (int r = board.size() - 2; r >= 0; r -= 1){
-                Tile t = board.tile(c, r);
-                //首先要确定对于当下这块tile，它上面有多空，
-                //不能merge的话，可以上到多远。
-                //FarthestRow是不考虑merge情况下可以上到的最高行
-                //如果这个tile的最高行 不是board上的最高行，就可以想是不是可以merge
-                if (t != null){
-                    int F_Row = FarthestRow(c, r);
-                    //检验可到最远行是不是top：
-                    if (notReachTheTop(F_Row + 1)){
-                        Tile Above = board.tile(c, F_Row + 1);
-                        if (t.value() == Above.value()){
-                            //t.merge(c, FarthestRow(c, F_Row), Above);
-                            board.move(c, F_Row + 1, t);
-                            //board.move(c, FarthestRow(c, F_Row + 1), Above);
-                            //Tile AfterMarge = t.merge(c, FarthestRow(c, F_Row), Above);
-                            score += t.value() * 2;
+        /**对于北边*/
+        board.setViewingPerspective(side);
+            for (int c = 0; c < board.size(); c += 1) {
+                for (int r = board.size() - 2; r >= 0; r -= 1) {
+                    Tile t = board.tile(c, r);
+                    //首先要确定对于当下这块tile，它上面有多空，
+                    //不能merge的话，可以上到多远。
+                    //FarthestRow是不考虑merge情况下可以上到的最高行
+                    //如果这个tile的最高行 不是board上的最高行，就可以想是不是可以merge
+                    if (t != null) {
+                        int F_Row = FarthestRow(c, r);
+                        if (F_Row != r) {
                             changed = true;
                         }
-                    }
-                    board.move(c, F_Row, t);
+                        //检验可到最远行是不是top,不是的话也就是上面有另外的砖块，a.一样可merge，b不一样。
+                        if (notReachTheTop(F_Row)) {
+                            Tile Above = board.tile(c, F_Row + 1);
+                            if (t.value() == Above.value() && !Above.merged) {
+                                board.move(c, F_Row + 1, t);
+                                Tile mergedTile = t.merge(c, F_Row + 1, Above);//return next(也就是一个新的Tile）
+                                board.addTile(mergedTile);
+                                mergedTile.isMerged();
 
+                                score += mergedTile.value();
+                                t = null;
+                                changed = true;
+                            } else {
+                                board.move(c, F_Row, t);
+                            }
+                        } else {
+                            board.move(c, F_Row, t);
+                        }
+                    }
                 }
             }
-        }
 
         // TODO: Modify this.board (and perhaps this.score) to account
         // for the tilt to the Side SIDE. If the board changed, set the
         // changed local variable to true.
-
+        board.setViewingPerspective(Side.NORTH);
         checkGameOver();
         if (changed) {
             setChanged();
         }
         return changed;
     }
+
+    /** 應該在哪一行停下來，return最遠的row */
     public int FarthestRow(int col, int row){
             for (int i = 1; row + i <= board.size() - 1; i += 1){
                 //如果t上面的不是空的（有阻碍），所以不是null：
@@ -158,11 +169,12 @@ public class Model extends Observable {
         }
 
     public boolean notReachTheTop(int row){
-        if (row < board.size()){
+        if (row != board.size() - 1){
             return true;
         }
         return false;
     }
+
 
     /** Checks if the game is over and sets the gameOver variable
      *  appropriately.

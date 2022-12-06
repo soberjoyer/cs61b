@@ -5,6 +5,8 @@ package game2048;
  */
 public class Tile {
 
+    public boolean merged;
+
     /** A new tile with VALUE as its value at (ROW, COL).  This
      *  constructor is private, so all tiles are created by the
      *  factory methods create, move, and merge. */
@@ -13,6 +15,11 @@ public class Tile {
         this.row = row;
         this.col = col;
         this.next = null;
+        this.merged = false;
+    }
+
+    public void isMerged() {
+        merged = true;
     }
 
     /** Return my current row. */
