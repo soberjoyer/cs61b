@@ -113,23 +113,14 @@ public class Model extends Observable {
         // TODO: Fill in this function.
         // set the viewing perspective to make the operations more convenient
         board.setViewingPerspective(side);
+        //先一次过先让所有的tile都相邻
         int size = board.size();
-        for (int col = 0; col < size; col ++ ) {
-            // move all the tiles to make them adjacent
-            for (int row = size - 1; row >= 0; row -- ) {
+        for (int col = 0; col < size; col ++) {
+            for (int row = size - 1; row >= 0; row--) {
                 Tile t = board.tile(col, row);
                 if (t != null) {
-                    // find nextPos which is null
-                    int nextPos = 3;
-                    while (nextPos >= row) {
-                        if (board.tile(col, nextPos) == null) {
-                            break;
-                        }
-                        nextPos -- ;
-                    }
-                    // check if nextPos is a legal position
-                    if (nextPos >= row) {
-                        board.move(col, nextPos, t);
+                    if (FarthestRow(col, row) != row){
+                        board.move(col, FarthestRow(col, row), t);
                         changed = true;
                     }
                 }
@@ -137,37 +128,38 @@ public class Model extends Observable {
 
             // Step2. try to merge
             // [2, 2, x, x] -> [4, x, x, x]
-            for (int row = 3; row >= 0; row -- ) {
+            for (int row = size - 1; row >= 0; row--) {
                 Tile curTile = board.tile(col, row);
-                // find out the next row's tile
-                int nextLine = row - 1;
-                if (nextLine < 0) {
+                int nextRow = row - 1;
+                Tile nextTile = board.tile(col, nextRow);
+                //如果相邻之间其中一个是null，就没有merge的可能性，断掉。
+                if (nextTile == null || curTile == null){
                     break;
                 }
-                Tile nextTile = board.tile(col, nextLine);
-                // if one of the two tile is null we break this loop
-                if (curTile == null || nextTile == null) {
-                    break;
-                }
-                int nextValue = nextTile.value();
-                if (nextValue == curTile.value()) {
-                    // merge the two tiles whose value are equaled
+                //如果相邻value一样，可以merge（move已经解决了所有的事情)
+                if (nextTile.value() == curTile.value()){
                     board.move(col, row, nextTile);
                     score += curTile.value() * 2;
-                    // move the tiles behind the two merged tiles to the place where the second tiles was
-                    for (int p = nextLine - 1; p >= 0; p -- ) {
-                        Tile tile = board.tile(col, p);
-                        if (tile == null) {
+                    changed = true;
+                    //merge之后要考虑下面的tile要移动到空缺位置的问题。
+
+                    for (int p = nextRow - 1; p >= 0; p--){
+                        Tile belowMerge = board.tile(col, p);
+                        if (belowMerge == null){
                             break;
                         }
-                        if (p < size) {
-                            board.move(col, p + 1, tile);
+                        //因为这个是在第row行的iteration里面的，所以p肯定要小于row
+                        //然后因为这已经是经过一轮move后大家都相邻的状况，
+                        //有merge后只可能出现一行的空缺，只要移动一行就够了
+                        if (p < row){
+                            board.move(col, p + 1, belowMerge);
+                            changed = true;
                         }
                     }
-                    changed = true;
                 }
             }
         }
+
         board.setViewingPerspective(Side.NORTH);
 
         checkGameOver();
@@ -177,6 +169,17 @@ public class Model extends Observable {
         return changed;
     }
 
+    /** 應該在哪一行停下來，return最遠的row */
+    public int FarthestRow(int col, int row){
+        for (int i = 1; row + i <= board.size() - 1; i += 1){
+            //如果t上面的不是空的（有阻碍），所以不是null：
+            if (board.tile(col, row + i) != null){
+                return (row + i - 1);
+            }
+        }
+        //t上面一直没阻碍，所以可以冲到最上面
+        return board.size() - 1;
+    }
 
     /** Checks if the game is over and sets the gameOver variable
      *  appropriately.
