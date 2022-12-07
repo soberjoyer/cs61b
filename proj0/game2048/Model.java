@@ -109,70 +109,72 @@ public class Model extends Observable {
     public boolean tilt(Side side) {
         boolean changed;
         changed = false;
-        /**对于北边*/
-        board.setViewingPerspective(side);
-            for (int c = 0; c < board.size(); c += 1) {
-                for (int r = board.size() - 2; r >= 0; r -= 1) {
-                    Tile t = board.tile(c, r);
-                    //首先要确定对于当下这块tile，它上面有多空，
-                    //不能merge的话，可以上到多远。
-                    //FarthestRow是不考虑merge情况下可以上到的最高行
-                    //如果这个tile的最高行 不是board上的最高行，就可以想是不是可以merge
-                    if (t != null) {
-                        int F_Row = FarthestRow(c, r);
-                        if (F_Row != r) {
-                            changed = true;
-                        }
-                        //检验可到最远行是不是top,不是的话也就是上面有另外的砖块，a.一样可merge，b不一样。
-                        if (notReachTheTop(F_Row)) {
-                            Tile Above = board.tile(c, F_Row + 1);
-                            if (t.value() == Above.value() && !Above.merged) {
-                                board.move(c, F_Row + 1, t);
-                                Tile mergedTile = t.merge(c, F_Row + 1, Above);//return next(也就是一个新的Tile）
-                                board.addTile(mergedTile);
-                                mergedTile.isMerged();
 
-                                score += mergedTile.value();
-                                t = null;
-                                changed = true;
-                            } else {
-                                board.move(c, F_Row, t);
-                            }
-                        } else {
-                            board.move(c, F_Row, t);
+        // TODO: Fill in this function.
+        // set the viewing perspective to make the operations more convenient
+        board.setViewingPerspective(side);
+        int size = board.size();
+        for (int col = 0; col < size; col ++ ) {
+            // move all the tiles to make them adjacent
+            for (int row = size - 1; row >= 0; row -- ) {
+                Tile t = board.tile(col, row);
+                if (t != null) {
+                    // find nextPos which is null
+                    int nextPos = 3;
+                    while (nextPos >= row) {
+                        if (board.tile(col, nextPos) == null) {
+                            break;
                         }
+                        nextPos -- ;
+                    }
+                    // check if nextPos is a legal position
+                    if (nextPos >= row) {
+                        board.move(col, nextPos, t);
+                        changed = true;
                     }
                 }
             }
 
-        // TODO: Modify this.board (and perhaps this.score) to account
-        // for the tilt to the Side SIDE. If the board changed, set the
-        // changed local variable to true.
+            // Step2. try to merge
+            // [2, 2, x, x] -> [4, x, x, x]
+            for (int row = 3; row >= 0; row -- ) {
+                Tile curTile = board.tile(col, row);
+                // find out the next row's tile
+                int nextLine = row - 1;
+                if (nextLine < 0) {
+                    break;
+                }
+                Tile nextTile = board.tile(col, nextLine);
+                // if one of the two tile is null we break this loop
+                if (curTile == null || nextTile == null) {
+                    break;
+                }
+                int nextValue = nextTile.value();
+                if (nextValue == curTile.value()) {
+                    // merge the two tiles whose value are equaled
+                    board.move(col, row, nextTile);
+                    score += curTile.value() * 2;
+                    // move the tiles behind the two merged tiles to the place where the second tiles was
+                    for (int p = nextLine - 1; p >= 0; p -- ) {
+                        Tile tile = board.tile(col, p);
+                        if (tile == null) {
+                            break;
+                        }
+                        if (p < size) {
+                            board.move(col, p + 1, tile);
+                        }
+                    }
+                    changed = true;
+                }
+            }
+        }
         board.setViewingPerspective(Side.NORTH);
+
         checkGameOver();
         if (changed) {
             setChanged();
         }
         return changed;
-    }
-
-    /** 應該在哪一行停下來，return最遠的row */
-    public int FarthestRow(int col, int row){
-            for (int i = 1; row + i <= board.size() - 1; i += 1){
-                //如果t上面的不是空的（有阻碍），所以不是null：
-                if (board.tile(col, row + i) != null){
-                    return (row + i - 1);
-                }
-            }
-            //t上面一直没阻碍，所以可以冲到最上面
-            return board.size() - 1;
-        }
-
-    public boolean notReachTheTop(int row){
-        if (row != board.size() - 1){
-            return true;
-        }
-        return false;
     }
 
 
