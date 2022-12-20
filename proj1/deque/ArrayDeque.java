@@ -40,7 +40,7 @@ public class ArrayDeque<T> implements Deque<T> {
 
     private void resizeDown(int capacity) {
         T[] newItems = (T[]) new Object[capacity];
-        System.arraycopy(items, nextFirst + 1, newItems, 0, size);
+        System.arraycopy(items, currFirst(), newItems, 0, size);
         items = newItems;
         nextLast = size;
         nextFirst = capacity - 1;
@@ -98,34 +98,40 @@ public class ArrayDeque<T> implements Deque<T> {
         return null;
     }
 
-    private void DoResize(int size, int itemsLength){
+    private void doResize(int size, int itemsLength){
         if ((size < itemsLength / 4) && (size > 100)){
                 resizeDown(itemsLength / 4);
         } else if ((size <= 100) && (size > 4) && (size < itemsLength / 10)){
             resizeDown(itemsLength / 10);
         }
     }
+
+    private int currFirst(){
+        return (nextFirst + 1) % items.length;
+    }
     @Override
     public T removeFirst() {
-        DoResize(size, items.length);
+        doResize(size, items.length);
 
-        int CurrFirst = (nextFirst + 1) % items.length;
-        nextFirst = CurrFirst;
-        return remove(CurrFirst);
+        int RemovedIndex = currFirst();
+        nextFirst = RemovedIndex;
+        return remove(RemovedIndex);
     }
 
+    private int currLast(){
+        if (nextLast == 0) {
+            return items.length - 1;
+        } else {
+            return nextLast - 1;
+        }
+    }
     @Override
     public T removeLast() {
-        DoResize(size, items.length);
+        doResize(size, items.length);
 
-        int currLast;
-        if (nextLast == 0) {
-            currLast = items.length - 1;
-        } else {
-            currLast = nextLast - 1;
-        }
-        nextLast = currLast;
-        return remove(currLast);
+        int RemovedIndex = currLast();
+        nextLast = RemovedIndex;
+        return remove(RemovedIndex);
     }
 
     @Override
