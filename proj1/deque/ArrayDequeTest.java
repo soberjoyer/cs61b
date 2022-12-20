@@ -50,6 +50,9 @@ public class ArrayDequeTest {
         // should be empty
         assertTrue("lld1 should be empty after removal", ad1.isEmpty());
 
+        ad1.addFirst(0);
+        System.out.print(ad1.get(0));
+
     }
 
     @Test
