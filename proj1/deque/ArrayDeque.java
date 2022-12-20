@@ -11,19 +11,11 @@ public class ArrayDeque<T> implements Deque<T> {
     public ArrayDeque(){
         items = (T[]) new Object[8];
         size = 0;
-        nextFirst = 0;
-        nextLast = 7;
+        nextFirst = 4;
+        nextLast = 5;
     }
 
-    public void insert(T x, int position) {
-        T[] newItems = (T[]) new Object[items.length + 1];
 
-        System.arraycopy(items, 0, newItems, 0, position);
-        newItems[position] = x;
-
-        System.arraycopy(items, position, newItems, position + 1, items.length - position);
-        items = newItems;
-    }
     /**BEFORE addLast('Z'): (e g h f c a b d) */
     /********************** (0 1 2 3 4 5 6 7) */
     /** nextLast = 3 */
@@ -47,7 +39,10 @@ public class ArrayDeque<T> implements Deque<T> {
     }
     @Override
     public void addFirst(T item) {
-        insert(item, nextFirst);
+        if (size == items.length){
+            resizeUp(size * 2);
+        }
+        items[nextFirst] = item;
         size = size + 1;
         if (nextFirst != 0){
             nextFirst = nextFirst - 1;

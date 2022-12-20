@@ -112,7 +112,6 @@ public class ArrayDequeTest {
     /* Add large number of elements to deque; check if order is correct. */
     public void bigLLDequeTest() {
 
-
         ArrayDeque<Integer> ad1 = new ArrayDeque<Integer>();
         for (int i = 0; i < 1000000; i++) {
             ad1.addLast(i);
@@ -127,6 +126,18 @@ public class ArrayDequeTest {
             assertEquals("Should have the same value", i, (double) ad1.removeLast(), 0.0);
         }
 
+    }
+
+    @Test
+    public void RandomAddTest(){
+        ArrayDeque<Integer> ad1 = new ArrayDeque<Integer>();
+        ad1.addFirst(1);
+        ad1.addFirst(2);
+        ad1.addFirst(3);
+        //ad1.removeLast();
+        //ad1.addLast(7);
+        ad1.printDeque();
+        System.out.println(ad1.get(7));
     }
 
 }
