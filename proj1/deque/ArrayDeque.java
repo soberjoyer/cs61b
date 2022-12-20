@@ -29,7 +29,7 @@ public class ArrayDeque<T> implements Deque<T> {
     /** nextLast = 3 */
     /**AFTER addLast('Z'):  (f c a b d e g h Z) */
     /********************** (0 1 2 3 4 5 6 7 8) */
-    private void resize(int capacity) {
+    private void resizeUp(int capacity) {
         T[] newItems = (T[]) new Object[capacity];
         System.arraycopy(items, nextLast, newItems, 0, items.length - nextLast);
         System.arraycopy(items, 0, newItems, items.length - nextLast, nextLast);
@@ -37,9 +37,18 @@ public class ArrayDeque<T> implements Deque<T> {
         nextLast = size;
         nextFirst = capacity - 1;
     }
+
+    private void resizeDown(int capacity) {
+        T[] newItems = (T[]) new Object[capacity];
+        System.arraycopy(items, nextFirst + 1, newItems, 0, size);
+        items = newItems;
+        nextLast = size;
+        nextFirst = capacity - 1;
+    }
     @Override
     public void addFirst(T item) {
         insert(item, nextFirst);
+        size = size + 1;
         if (nextFirst != 0){
             nextFirst = nextFirst - 1;
         } else {
@@ -50,7 +59,7 @@ public class ArrayDeque<T> implements Deque<T> {
     @Override
     public void addLast(T item) {
         if (size == items.length){
-            resize(size * 2);
+            resizeUp(size * 2);
         }
         items[nextLast] = item;
         nextLast = (nextLast + 1) % items.length;
@@ -88,28 +97,34 @@ public class ArrayDeque<T> implements Deque<T> {
         }
         return null;
     }
+
+    private void DoResize(int size, int itemsLength){
+        if ((size < itemsLength / 4) && (size > 100)){
+                resizeDown(itemsLength / 4);
+        } else if ((size <= 100) && (size > 4) && (size < itemsLength / 10)){
+            resizeDown(itemsLength / 10);
+        }
+    }
     @Override
     public T removeFirst() {
-        if ((size < items.length / 4) && (size > 4)) {
+        DoResize(size, items.length);
 
-            resize(items.length / 4);
-        }
         int CurrFirst = (nextFirst + 1) % items.length;
+        nextFirst = CurrFirst;
         return remove(CurrFirst);
     }
 
     @Override
     public T removeLast() {
-        if ((size < items.length / 4) && (size > 4)) {
+        DoResize(size, items.length);
 
-            resize(items.length / 4);
-        }
         int currLast;
         if (nextLast == 0) {
             currLast = items.length - 1;
         } else {
             currLast = nextLast - 1;
         }
+        nextLast = currLast;
         return remove(currLast);
     }
 

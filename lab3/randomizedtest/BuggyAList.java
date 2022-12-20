@@ -68,4 +68,5 @@ public class BuggyAList<Item> {
         size = size - 1;
         return x;
     }
+
 }
