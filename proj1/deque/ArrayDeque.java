@@ -15,7 +15,6 @@ public class ArrayDeque<T> implements Deque<T> {
         nextLast = 1;
     }
 
-
     /**BEFORE addLast('Z'): (e g h f c a b d) */
     /********************** (0 1 2 3 4 5 6 7) */
     /** nextLast = 3 */
@@ -83,8 +82,10 @@ public class ArrayDeque<T> implements Deque<T> {
         }
         System.out.println();
     }
-    public T remove(int index){
-        if (items[index] != null){
+    private T remove(int index){
+        if (this.isEmpty()){
+            return null;
+        }else if (items[index] != null){
             T value = items[index];
             items[index] = null;
             size = size - 1;
@@ -107,10 +108,15 @@ public class ArrayDeque<T> implements Deque<T> {
     @Override
     public T removeFirst() {
         doResize(size, items.length);
-
+        //问题在于如果first是null的话，下面这些东西都是不应该改变的。
+        //以及在整个list刚开始加入的时候，remove不应该有动作。
+        //iff first是有东西的，nextFirst才需要改变。
         int RemovedIndex = currFirst();
-        nextFirst = RemovedIndex;
-        return remove(RemovedIndex);
+        T returned = remove(RemovedIndex);
+        if (returned != null) {
+            nextFirst = RemovedIndex;
+        }
+        return returned;
     }
 
     private int currLast(){
@@ -125,8 +131,11 @@ public class ArrayDeque<T> implements Deque<T> {
         doResize(size, items.length);
 
         int RemovedIndex = currLast();
-        nextLast = RemovedIndex;
-        return remove(RemovedIndex);
+        T returned = remove(RemovedIndex);
+        if (returned != null) {
+            nextLast = RemovedIndex;
+        }
+        return returned;
     }
 
     @Override

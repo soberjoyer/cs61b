@@ -3,6 +3,8 @@ package deque;
 import org.checkerframework.checker.units.qual.A;
 import org.junit.Test;
 
+import java.util.Optional;
+
 import static org.junit.Assert.*;
 
 /** b01) AD-basic: add/get (0.0/1.333)
@@ -129,7 +131,7 @@ public class ArrayDequeTest {
     }
 
     @Test
-    public void RandomAddTest(){
+    public void OrderTest(){
         ArrayDeque<String> ad1 = new ArrayDeque<>();
         ad1.addLast("a");
         ad1.addLast("b");
@@ -140,8 +142,7 @@ public class ArrayDequeTest {
         ad1.addLast("g");
         ad1.addLast("h");
         ad1.addLast("Z");
-        //ad1.removeLast();
-        //ad1.addLast(7);
+
         ad1.printDeque();
 
     }
@@ -154,7 +155,21 @@ public class ArrayDequeTest {
 
         //ad1.removeLast();
         //ad1.addLast(7);
-        System.out.println(ad1.get(0));
+        assertEquals(Integer.valueOf(1), ad1.get(0));
+
+    }
+
+    @Test
+    public void removeBeforeAdd(){
+        //if nexfFirst = 0
+        ArrayDeque<Integer> ad1 = new ArrayDeque<>();
+        ad1.removeFirst();
+        ad1.addFirst(1);
+
+        //ad1.removeLast();
+        //ad1.addLast(7);
+        assertEquals(Integer.valueOf(1), ad1.get(0));
+
 
     }
 
