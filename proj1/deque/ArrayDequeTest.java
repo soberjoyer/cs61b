@@ -130,14 +130,32 @@ public class ArrayDequeTest {
 
     @Test
     public void RandomAddTest(){
-        ArrayDeque<Integer> ad1 = new ArrayDeque<Integer>();
-        ad1.addFirst(1);
-        ad1.addFirst(2);
-        ad1.addFirst(3);
+        ArrayDeque<String> ad1 = new ArrayDeque<>();
+        ad1.addLast("a");
+        ad1.addLast("b");
+        ad1.addFirst("c");
+        ad1.addLast("d");
+        ad1.addLast("e");
+        ad1.addFirst("f");
+        ad1.addLast("g");
+        ad1.addLast("h");
+        ad1.addLast("Z");
         //ad1.removeLast();
         //ad1.addLast(7);
         ad1.printDeque();
-        System.out.println(ad1.get(7));
+
+    }
+
+    @Test
+    public void NextFirstTest(){
+        //if nexfFirst = 0
+        ArrayDeque<Integer> ad1 = new ArrayDeque<>();
+        ad1.addFirst(1);
+
+        //ad1.removeLast();
+        //ad1.addLast(7);
+        System.out.println(ad1.get(0));
+
     }
 
 }
