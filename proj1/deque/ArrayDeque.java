@@ -15,6 +15,17 @@ public class ArrayDeque<T> implements Deque<T> {
         nextLast = 1;
     }
 
+    private int checkChange(int num){
+        if (num < 0){
+            return num + items.length;
+        } else if (num >= items.length){
+            return num - items.length;
+        } else {
+            return num;
+        }
+    }
+
+
     /**BEFORE addLast('Z'): (e g h f c a b d) */
     /********************** (0 1 2 3 4 5 6 7) */
     /** nextLast = 3 */
@@ -35,6 +46,7 @@ public class ArrayDeque<T> implements Deque<T> {
         items = newItems;
         nextLast = size;
         nextFirst = capacity - 1;
+
     }
     @Override
     public void addFirst(T item) {
@@ -137,9 +149,12 @@ public class ArrayDeque<T> implements Deque<T> {
         }
         return returned;
     }
-
+    /**get（index)指的是以当下的first所在的（位置+index） */
     @Override
     public T get(int index) {
-        return items[index];
+        if (index >= size){
+            return  null;
+        }
+        return items[checkChange(index + nextFirst + 1)];
     }
 }

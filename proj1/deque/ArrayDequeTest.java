@@ -1,3 +1,4 @@
+/** Performs some basic Array list tests. */
 package deque;
 
 import org.checkerframework.checker.units.qual.A;
@@ -172,5 +173,36 @@ public class ArrayDequeTest {
 
 
     }
+
+    @Test
+    public void testGet2() {
+        ArrayDeque<Integer> input = new ArrayDeque<>();
+        input.addLast(0);
+        input.addLast(1);
+        input.addLast(2);
+        input.removeFirst();
+        int result = input.get(1);
+        assertEquals(2, result);
+
+    }
+
+    @Test
+    public void testGet3() {
+        ArrayDeque<Integer> input = new ArrayDeque<>();
+        input.addFirst(0);
+        input.addLast(1);
+        input.addFirst(2);
+        input.addFirst(3);
+        input.removeFirst();
+        input.removeFirst();
+        input.addLast(6);
+        input.removeFirst();
+        input.addLast(8);
+        input.removeLast();
+        input.removeFirst();
+        int result = input.get(0);
+        assertEquals(6, result);
+    }
+
 
 }
