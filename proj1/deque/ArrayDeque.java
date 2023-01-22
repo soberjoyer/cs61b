@@ -10,17 +10,17 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
 
 
     /** Creates an empty list. */
-    public ArrayDeque(){
+    public ArrayDeque() {
         items = (T[]) new Object[8];
         size = 0;
         nextFirst = 0;
         nextLast = 1;
     }
 
-    private int checkChange(int num){
-        if (num < 0){
+    private int checkChange(int num) {
+        if (num < 0) {
             return num + items.length;
-        } else if (num >= items.length){
+        } else if (num >= items.length) {
             return num - items.length;
         } else {
             return num;
@@ -52,12 +52,12 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
     }
     @Override
     public void addFirst(T item) {
-        if (size == items.length){
+        if (size == items.length) {
             resizeUp(size * 2);
         }
         items[nextFirst] = item;
         size = size + 1;
-        if (nextFirst != 0){
+        if (nextFirst != 0) {
             nextFirst = nextFirst - 1;
         } else {
             nextFirst = items.length - 1;
@@ -66,7 +66,7 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
 
     @Override
     public void addLast(T item) {
-        if (size == items.length){
+        if (size == items.length) {
             resizeUp(size * 2);
         }
         items[nextLast] = item;
@@ -82,17 +82,17 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
 
     @Override
     public void printDeque() {
-        for (int i = 0; i < items.length; i++){
-            if (items[i] != null){
+        for (int i = 0; i < items.length; i++) {
+            if (items[i] != null) {
                 System.out.print(items[i] + " ");
             }
         }
         System.out.println();
     }
-    private T remove(int index){
-        if (this.isEmpty()){
+    private T remove(int index) {
+        if (this.isEmpty()) {
             return null;
-        }else if (items[index] != null){
+        } else if (items[index] != null) {
             T value = items[index];
             items[index] = null;
             size = size - 1;
@@ -101,15 +101,15 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         return null;
     }
 
-    private void doResize(int size, int itemsLength){
-        if ((size < itemsLength / 4) && (size > 100)){
-                resizeDown(itemsLength / 4);
-        } else if ((size <= 100) && (size > 4) && (size < itemsLength / 10)){
+    private void doResize(int size, int itemsLength) {
+        if ((size < itemsLength / 4) && (size > 100)) {
+            resizeDown(itemsLength / 4);
+        } else if ((size <= 100) && (size > 4) && (size < itemsLength / 10)) {
             resizeDown(itemsLength / 10);
         }
     }
 
-    private int currFirst(){
+    private int currFirst() {
         return (nextFirst + 1) % items.length;
     }
     @Override
@@ -118,15 +118,15 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         //问题在于如果first是null的话，下面这些东西都是不应该改变的。
         //以及在整个list刚开始加入的时候，remove不应该有动作。
         //iff first是有东西的，nextFirst才需要改变。
-        int RemovedIndex = currFirst();
-        T returned = remove(RemovedIndex);
+        int removedIndex = currFirst();
+        T returned = remove(removedIndex);
         if (returned != null) {
-            nextFirst = RemovedIndex;
+            nextFirst = removedIndex;
         }
         return returned;
     }
 
-    private int currLast(){
+    private int currLast() {
         if (nextLast == 0) {
             return items.length - 1;
         } else {
@@ -137,17 +137,17 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
     public T removeLast() {
         doResize(size, items.length);
 
-        int RemovedIndex = currLast();
-        T returned = remove(RemovedIndex);
+        int removedIndex = currLast();
+        T returned = remove(removedIndex);
         if (returned != null) {
-            nextLast = RemovedIndex;
+            nextLast = removedIndex;
         }
         return returned;
     }
     /**get（index)指的是以当下的first所在的（位置+index） */
     @Override
     public T get(int index) {
-        if (index >= size){
+        if (index >= size) {
             return  null;
         }
         return items[checkChange(index + nextFirst + 1)];
@@ -158,10 +158,10 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         return new ArrayIterator();
     }
 
-    private class ArrayIterator implements Iterator<T>{
+    private class ArrayIterator implements Iterator<T> {
         private int curPos;
 
-        public ArrayIterator(){
+        public ArrayIterator() {
             curPos = 0;
         }
         @Override
@@ -177,42 +177,24 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
     }
 
     @Override
-    public boolean equals(Object o){
-        if (o == null){
+    public boolean equals(Object o) {
+        if (o == null) {
             return false;
         }
-        if (o.getClass() != this.getClass()){
+        if (o.getClass() != this.getClass()) {
             return false;
         }
         ArrayDeque<T> other = (ArrayDeque<T>) o;
-        if (other.size() != this.size()){
+        if (other.size() != this.size()) {
             return false;
         }
         int curPos = 0;
-        while (curPos < size){
-            if (other.get(curPos) != this.get(curPos)){
+        while (curPos < size) {
+            if (other.get(curPos) != this.get(curPos)) {
                 return false;
             }
             curPos += 1;
         }
         return true;
-    }
-    public static void main(String[] args) {
-        //* Creates a list of one integer, namely 10 */
-        ArrayDeque<Integer> javaA = new ArrayDeque<>();
-        javaA.addFirst(5);
-        javaA.addFirst(23);
-        javaA.addLast(17);
-
-        for (int i : javaA) {
-            System.out.println(i);
-        }
-
-        ArrayDeque<Integer> javaA2 = new ArrayDeque<>();
-        javaA2.addFirst(5);
-        javaA2.addFirst(23);
-        javaA2.addLast(17);
-
-        System.out.println(javaA.equals(javaA2));
     }
 }

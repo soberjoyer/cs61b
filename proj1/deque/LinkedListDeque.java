@@ -4,11 +4,11 @@ import java.util.Iterator;
 
 public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
     private class StuffNode {
-        public StuffNode pre;
-        public T item;
-        public StuffNode next;
+        private StuffNode pre;
+        private T item;
+        private StuffNode next;
 
-        public StuffNode(StuffNode p, T i, StuffNode n) {
+        StuffNode(StuffNode p, T i, StuffNode n) {
             pre = p;
             item = i;
             next = n;
@@ -133,9 +133,9 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
         return new LinkedListIterator();
     }
 
-    private class LinkedListIterator implements Iterator<T>{
+    private class LinkedListIterator implements Iterator<T> {
         private int curPos;
-        public LinkedListIterator(){
+        public LinkedListIterator() {
             curPos = 0;
         }
         @Override
@@ -150,7 +150,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
         }
     }
 
-    public T getRecursive(int index, StuffNode p) {
+    private T getRecursive(int index, StuffNode p) {
         if (index == 0) {
             if (p != null) {
                 return p.item;
@@ -163,44 +163,30 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
         return null;
     }
 
-    public T getRecursive(int index) {
+    private T getRecursive(int index) {
         return getRecursive(index, sentinel.next);
     }
 
     @Override
-    public boolean equals(Object o){
-        if (o == null){
+    public boolean equals(Object o) {
+        if (o == null) {
             return false;
         }
-        if (o.getClass() != this.getClass()){
+        if (o.getClass() != this.getClass()) {
             return false;
         }
         LinkedListDeque<T> other = (LinkedListDeque<T>) o;
-        if (other.size() != this.size()){
+        if (other.size() != this.size()) {
             return false;
         }
         int curPos = 0;
-        while (curPos < size){
-            if (other.get(curPos) != this.get(curPos)){
+        while (curPos < size) {
+            if (other.get(curPos) != this.get(curPos)) {
                 return false;
             }
             curPos += 1;
         }
         return true;
-    }
-    public static void main(String[] args) {
-        //* Creates a list of one integer, namely 10 */
-        LinkedListDeque<Integer> javaLL = new LinkedListDeque<>();
-        javaLL.addFirst(5);
-        javaLL.addFirst(23);
-        javaLL.addLast(17);
-
-        LinkedListDeque<Integer> javaLL2 = new LinkedListDeque<>();
-        javaLL2.addFirst(5);
-        javaLL2.addFirst(23);
-        javaLL2.addLast(18);
-
-        System.out.println(javaLL.equals(javaLL2));
     }
 
 }
