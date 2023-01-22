@@ -149,7 +149,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
         }
     }
 
-    private T getRecursive(int index, StuffNode p) {
+    public T getRecursive(int index, StuffNode p) {
         if (index == 0) {
             if (p != null) {
                 return p.item;
@@ -162,7 +162,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
         return null;
     }
 
-    private T getRecursive(int index) {
+    public T getRecursive(int index) {
         return getRecursive(index, sentinel.next);
     }
 
@@ -171,10 +171,8 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
         if (o == null) {
             return false;
         }
-        if (o.getClass() != this.getClass()) {
-            return false;
-        }
-        LinkedListDeque<T> other = (LinkedListDeque<T>) o;
+
+        Deque<T> other = (Deque<T>) o;
         if (other.size() != this.size()) {
             return false;
         }

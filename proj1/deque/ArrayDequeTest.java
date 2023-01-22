@@ -204,5 +204,46 @@ public class ArrayDequeTest {
         assertEquals(6, result);
     }
 
+    @Test
+    public void equalTest(){
+        ArrayDeque<Integer> input = new ArrayDeque<>();
+        input.addLast(0);
+        input.addLast(1);
+        input.addLast(2);
+        input.addLast(3);
+        System.out.println(input);
+
+        ArrayDeque<Integer> input2 = new ArrayDeque<>();
+        input2.addLast(2);
+        input2.addLast(3);
+        input2.addFirst(1);
+        input2.addFirst(0);
+
+        System.out.println(input2);
+        System.out.println(input.equals(input2));
+
+    }
+
+    @Test
+    public void differentTypeEqualTest(){
+        ArrayDeque<Integer> input = new ArrayDeque<>();
+        input.addLast(0);
+        input.addLast(1);
+        input.addLast(2);
+        input.addLast(3);
+        System.out.println(input);
+
+        LinkedListDeque<Integer> input2 = new LinkedListDeque<>();
+        input2.addLast(0);
+        input2.addLast(1);
+        input2.addLast(2);
+        input2.addLast(3);
+
+        System.out.println(input2);
+
+        System.out.println(input.equals(input2));
+
+    }
+
 
 }
