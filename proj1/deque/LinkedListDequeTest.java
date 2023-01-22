@@ -40,7 +40,6 @@ public class LinkedListDequeTest {
     /** Adds an item, then removes an item, and ensures that dll is empty afterwards. */
     public void addRemoveTest() {
 
-
         LinkedListDeque<Integer> lld1 = new LinkedListDeque<Integer>();
 		// should be empty
 		assertTrue("lld1 should be empty upon initialization", lld1.isEmpty());
@@ -55,6 +54,31 @@ public class LinkedListDequeTest {
 
     }
 
+    @Test
+    public void randomAddFirstRemove(){
+        LinkedListDeque<Integer> lld1 = new LinkedListDeque<Integer>();
+        lld1.addFirst(0);
+        lld1.addFirst(1);
+        lld1.addFirst(2);
+        lld1.addFirst(3);
+        lld1.isEmpty();
+        lld1.addFirst(5);
+        lld1.removeLast();
+        lld1.addFirst(7);
+        lld1.isEmpty();
+        lld1.removeFirst();
+        System.out.println(lld1.removeLast());
+    }
+
+    @Test
+    public void randomAddLastRemove(){
+        LinkedListDeque<Integer> lld1 = new LinkedListDeque<Integer>();
+        lld1.addLast(0);
+        lld1.addLast(1);
+        lld1.addLast(2);
+        lld1.addLast(3);
+
+    }
     @Test
     /* Tests removing from an empty deque */
     public void removeEmptyTest() {

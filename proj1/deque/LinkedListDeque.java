@@ -41,7 +41,9 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
             sentinel.next = new StuffNode(sentinel, item, sentinel);
             sentinel.pre = sentinel.next;
         } else {
-            sentinel.next = new StuffNode(sentinel, item, sentinel.next);
+            StuffNode newFirst = new StuffNode(sentinel, item, sentinel.next);
+            sentinel.next = newFirst;
+            newFirst.next.pre = newFirst;
         }
         size = size + 1;
     }
@@ -86,7 +88,9 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
             sentinel.next = null;
             sentinel.pre = null;
         } else {
-            sentinel.next = first.next;
+            StuffNode newFirst = first.next;
+            sentinel.next = newFirst;
+            newFirst.pre = sentinel;
         }
         size = size - 1;
         return first.item;
@@ -103,7 +107,9 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
             sentinel.pre = null;
             sentinel.next = null;
         } else {
-            sentinel.pre = last.pre;
+            StuffNode newLast = last.pre;
+            sentinel.pre = newLast;
+            newLast.next = sentinel;
         }
         size = size - 1;
         return last.item;
@@ -134,7 +140,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
 
     private class LinkedListIterator implements Iterator<T> {
         private int curPos;
-        public LinkedListIterator() {
+        LinkedListIterator() {
             curPos = 0;
         }
         @Override
@@ -149,7 +155,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
         }
     }
 
-    public T getRecursive(int index, StuffNode p) {
+    private T getRecursiveHelper(int index, StuffNode p) {
         if (index == 0) {
             if (p != null) {
                 return p.item;
@@ -157,13 +163,13 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
             return null;
         }
         if (p.next != null) {
-            return getRecursive(index - 1, p.next);
+            return getRecursiveHelper(index - 1, p.next);
         }
         return null;
     }
 
     public T getRecursive(int index) {
-        return getRecursive(index, sentinel.next);
+        return getRecursiveHelper(index, sentinel.next);
     }
 
     @Override

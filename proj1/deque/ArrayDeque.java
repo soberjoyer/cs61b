@@ -161,7 +161,7 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
     private class ArrayIterator implements Iterator<T> {
         private int curPos;
 
-        public ArrayIterator() {
+        ArrayIterator() {
             curPos = 0;
         }
         @Override

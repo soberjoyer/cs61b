@@ -1,9 +1,6 @@
 package deque;
 
-import jh61b.junit.In;
-
 import java.util.Comparator;
-
 public class MaxArrayDeque<T> extends ArrayDeque<T> {
     private Comparator<T> cpt;
 
