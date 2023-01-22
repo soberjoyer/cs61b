@@ -8,7 +8,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
         private T item;
         private StuffNode next;
 
-        StuffNode(StuffNode p, T i, StuffNode n) {
+        private StuffNode(StuffNode p, T i, StuffNode n) {
             pre = p;
             item = i;
             next = n;
@@ -37,18 +37,17 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
 
     @Override
     public void addFirst(T item) {
-        size = size + 1;
         if (this.isEmpty()) {
             sentinel.next = new StuffNode(sentinel, item, sentinel);
             sentinel.pre = sentinel.next;
         } else {
             sentinel.next = new StuffNode(sentinel, item, sentinel.next);
         }
+        size = size + 1;
     }
 
     @Override
     public void addLast(T item) {
-        size = size + 1;
         if (this.isEmpty()) {
             sentinel.pre = new StuffNode(sentinel, item, sentinel);
             sentinel.next = sentinel.pre;
@@ -56,8 +55,8 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
             StuffNode oldLast = sentinel.pre;
             sentinel.pre = new StuffNode(sentinel.pre, item, sentinel);
             oldLast.next = sentinel.pre;
-
         }
+        size = size + 1;
     }
 
     @Override

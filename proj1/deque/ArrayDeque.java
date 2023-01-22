@@ -56,12 +56,12 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
             resizeUp(size * 2);
         }
         items[nextFirst] = item;
-        size = size + 1;
         if (nextFirst != 0) {
             nextFirst = nextFirst - 1;
         } else {
             nextFirst = items.length - 1;
         }
+        size = size + 1;
     }
 
     @Override
