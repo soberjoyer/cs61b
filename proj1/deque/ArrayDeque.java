@@ -101,10 +101,10 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         return null;
     }
 
-    private void doResize(int size, int itemsLength) {
-        if ((size < itemsLength / 4) && (size > 100)) {
+    private void doResize(int hereSize, int itemsLength) {
+        if ((hereSize < itemsLength / 4) && (hereSize > 100)) {
             resizeDown(itemsLength / 4);
-        } else if ((size <= 100) && (size > 4) && (size < itemsLength / 10)) {
+        } else if ((hereSize <= 100) && (hereSize > 4) && (hereSize < itemsLength / 10)) {
             resizeDown(itemsLength / 10);
         }
     }
@@ -178,20 +178,23 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
 
     @Override
     public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
         if (o == null) {
             return false;
         }
-
+        if (!(o instanceof Deque)) {
+            return false;
+        }
         Deque<T> other = (Deque<T>) o;
         if (other.size() != this.size()) {
             return false;
         }
-        int curPos = 0;
-        while (curPos < size) {
-            if (other.get(curPos) != this.get(curPos)) {
+        for (int i = 0; i < size; i++) {
+            if (other.get(i) != this.get(i)) {
                 return false;
             }
-            curPos += 1;
         }
         return true;
     }
