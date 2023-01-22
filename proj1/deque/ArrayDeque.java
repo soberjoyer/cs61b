@@ -1,6 +1,8 @@
 package deque;
 
-public class ArrayDeque<T> implements Deque<T> {
+import java.util.Iterator;
+
+public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
     private T[] items;
     private int size;
     private int nextFirst;
@@ -72,13 +74,6 @@ public class ArrayDeque<T> implements Deque<T> {
         size = size + 1;
     }
 
-    @Override
-    public boolean isEmpty() {
-        if (size == 0){
-            return true;
-        }
-        return false;
-    }
 
     @Override
     public int size() {
@@ -156,5 +151,68 @@ public class ArrayDeque<T> implements Deque<T> {
             return  null;
         }
         return items[checkChange(index + nextFirst + 1)];
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return new ArrayIterator();
+    }
+
+    private class ArrayIterator implements Iterator<T>{
+        private int curPos;
+
+        public ArrayIterator(){
+            curPos = 0;
+        }
+        @Override
+        public boolean hasNext() {
+            return curPos < size;
+        }
+        @Override
+        public T next() {
+            T returnItem = get(curPos);
+            curPos += 1;
+            return returnItem;
+        }
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if (o == null){
+            return false;
+        }
+        if (o.getClass() != this.getClass()){
+            return false;
+        }
+        ArrayDeque<T> other = (ArrayDeque<T>) o;
+        if (other.size() != this.size()){
+            return false;
+        }
+        int curPos = 0;
+        while (curPos < size){
+            if (other.get(curPos) != this.get(curPos)){
+                return false;
+            }
+            curPos += 1;
+        }
+        return true;
+    }
+    public static void main(String[] args) {
+        //* Creates a list of one integer, namely 10 */
+        ArrayDeque<Integer> javaA = new ArrayDeque<>();
+        javaA.addFirst(5);
+        javaA.addFirst(23);
+        javaA.addLast(17);
+
+        for (int i : javaA) {
+            System.out.println(i);
+        }
+
+        ArrayDeque<Integer> javaA2 = new ArrayDeque<>();
+        javaA2.addFirst(5);
+        javaA2.addFirst(23);
+        javaA2.addLast(17);
+
+        System.out.println(javaA.equals(javaA2));
     }
 }
