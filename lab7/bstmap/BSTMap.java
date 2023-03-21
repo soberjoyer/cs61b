@@ -1,13 +1,12 @@
 package bstmap;
 
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 import java.util.Set;
 
-public class BSTMap<K extends Comparable<K> , V> implements Map61B{
+public class BSTMap<K extends Comparable<K> , V> implements Map61B<K, V>{
     private BSTNode root;
     private class BSTNode {
-        private K key;
+        private final K key;
         private V val;
 
         private BSTNode left, right;
@@ -23,62 +22,56 @@ public class BSTMap<K extends Comparable<K> , V> implements Map61B{
     public BSTMap() {
     }
 
-    public boolean isEmpty() {
+    private boolean isEmpty() {
         return size() == 0;
     }
 
     @Override
     public void clear() {
-        if (isEmpty()) {
-            return;
-        } else {
+        if (!isEmpty()) {
             root = null;
         }
     }
 
-    @Override
-    public boolean containsKey(Object key) {
+    public boolean containsKey(K key) {
         if (key == null) {
             throw new IllegalArgumentException("argument to contains() is null");
         }
         return containsKey(root, key);
     }
 
-    private boolean containsKey(BSTNode x, Object key) {
-        K k = (K) key;
-        if (k == null) {
+    private boolean containsKey(BSTNode x, K key) {
+        if (key == null) {
             throw new IllegalArgumentException("calls get() with a null key");
         }
         if (x == null) {
             return false;
         }
-        int cmp = k.compareTo(x.key);
+        int cmp = key.compareTo(x.key);
         if (cmp < 0) {
-            return containsKey(x.left, k);
+            return containsKey(x.left, key);
         } else if (cmp > 0) {
-            return containsKey(x.right, k);
+            return containsKey(x.right, key);
         } else return true;
 
     }
 
-    @Override
-    public Object get(Object key) {
+    public V get(K key) {
         return get(root, key);
     }
 
-    private Object get(BSTNode x, Object key) {
-        K k = (K) key;
-        if (k == null) {
+    private V get(BSTNode x, K key) {
+        if (key == null) {
             throw new IllegalArgumentException("calls get() with a null key");
         }
         if (x == null) {
             return  null;
         }
-        int cmp = k.compareTo(x.key);
+        int cmp = key.compareTo(x.key);
         if (cmp < 0) {
-            return get(x.left, k);
+            return get(x.left, key);
         } else if (cmp > 0) {
-            return get(x.right, k);
+            return get(x.right, key);
         } else return x.val;
 
     }
@@ -94,79 +87,20 @@ public class BSTMap<K extends Comparable<K> , V> implements Map61B{
         } else return x.size;
     }
 
-    public void delete(Object key) {
-        if (key == null) throw new IllegalArgumentException("calls delete() with a null key");
-        root = delete(root, key);
-    }
-    private BSTNode delete(BSTNode x, Object key) {
-        K k = (K) key;
-        if (x == null) {
-            return null;
-        }
-        int cmp = k.compareTo(x.key);
-        if (cmp < 0) {
-            x.left = delete(x.left, key);
-        } else if (cmp > 0) {
-            x.right = delete(x.right, key);
-        } else {
-            if (x.left == null) {
-                return x.right;
-            }
-            if (x.right == null) {
-                return x.left;
-            }
-            BSTNode t = x;
-            x = min(t.right);
-            x.right = deleteMin(t.right);
-            x.left = t.left;
-        }
-        x.size = size(x.left) + size(x.right) + 1;
-        return x;
-    }
-
-    public K min() {
-        if (isEmpty()) {
-            throw new NoSuchElementException("calls min() with empty symbol table");
-        }
-        return min(root).key;
-    }
-    private  BSTNode min(BSTNode x) {
-        if (x.left == null) {
-            return x;
-        }
-        else return min(x.left);
-    }
-
-    public void deleteMin() {
-        if (isEmpty()) throw new NoSuchElementException("Symbol table underflow");
-        root = deleteMin(root);
-        //assert check();
-    }
-
-    private BSTNode deleteMin(BSTNode x) {
-        if (x.left == null) return x.right;
-        x.left = deleteMin(x.left);
-        x.size = size(x.left) + size(x.right) + 1;
-        return x;
-    }
 
     @Override
-    public void put(Object key, Object value) {
-        K k = (K) key;
-        V val = (V) value;
+    public void put(K key, V value) {
         if (key == null) {
             throw new IllegalArgumentException("calls put() with a null key");
         }
-        root = put(root, key, val);
+        root = put(root, key, value);
     }
 
-    private BSTNode put(BSTNode x, Object key, Object val) {
-        K k = (K) key;
-        V v = (V) val;
+    private BSTNode put(BSTNode x, K key, V val) {
         if (x == null) {
-            return new BSTNode(k, v, 1);
+            return new BSTNode(key, val, 1);
         }
-        int cmp = k.compareTo(x.key);
+        int cmp = key.compareTo(x.key);
         if  (cmp < 0) {
             x.left  = put(x.left, key, val);
         }
@@ -174,7 +108,7 @@ public class BSTMap<K extends Comparable<K> , V> implements Map61B{
             x.right = put(x.right, key, val);
         }
         else {
-            x.val = v;
+            x.val = val;
         }
         x.size = 1 + size(x.left) + size(x.right);
         return x;
@@ -182,22 +116,21 @@ public class BSTMap<K extends Comparable<K> , V> implements Map61B{
 
 
     @Override
-    public Set keySet() {
+    public Set<K> keySet() {
+        throw new UnsupportedOperationException("Unsupported operation");
+    }
+
+
+    public V remove(K key) {
+        throw new UnsupportedOperationException("Unsupported operation");
+    }
+
+    public V remove(K key, V value) {
         throw new UnsupportedOperationException("Unsupported operation");
     }
 
     @Override
-    public Object remove(Object key) {
-        throw new UnsupportedOperationException("Unsupported operation");
-    }
-
-    @Override
-    public Object remove(Object key, Object value) {
-        throw new UnsupportedOperationException("Unsupported operation");
-    }
-
-    @Override
-    public Iterator iterator() {
+    public Iterator<K> iterator() {
         throw new UnsupportedOperationException("Unsupported operation");
     }
 
