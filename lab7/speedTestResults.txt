@@ -1,0 +1,16 @@
+InsertRandomSpeedTest
+                            
+	                10000	50000	100000	500000	1000000	5000000
+class bstmap.ULLMap	0.41	-	-	-	-	-
+class bstmap.BSTMap	0.03	0.04	0.05	0.27	0.80	2.58
+Java's Built-in TreeMap	0.01	0.04	0.04	0.24	0.36	1.53
+Java's Built-in HashMap	0.00	0.01	0.03	0.10	0.13	0.59
+
+
+InsertInOrderSpeedTest
+
+	                5000	10000	50000	100000
+class bstmap.ULLMap	0.29	1.17	-	-
+class bstmap.BSTMap	0.32	1.55	-	0.05
+Java's Built-in TreeMap	0.00	0.02	0.06	0.09
+Java's Built-in HashMap	0.02	0.01	0.03	0.05
