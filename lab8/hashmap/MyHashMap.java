@@ -16,24 +16,29 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
     @Override
     public void clear() {
         for (Collection<Node> bucket : buckets) {
-            bucket.clear();
+            if (bucket != null) {
+                bucket.clear();
+            }
         }
+        size = 0;
     }
 
     private int hash(K key) {
         if (key == null) {
             return 0;
         } else {
-            return key.hashCode() % size();
+            return Math.floorMod(key.hashCode(), buckets.length);
         }
     }
 
     @Override
     public boolean containsKey(K key) {
         int i = hash(key);
-        for (Node node : buckets[i]) {
-            if (key.equals(node.key)) {
-                return true;
+        if (i < buckets.length && buckets[i] != null) {
+            for (Node node : buckets[i]) {
+                if (key.equals(node.key)) {
+                    return true;
+                }
             }
         }
         return false;
@@ -42,9 +47,11 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
     @Override
     public V get(K key) {
         int i = hash(key);
-        for (Node node : buckets[i]) {
-            if (key.equals(node.key)) {
-                return node.value;
+        if (i < buckets.length && buckets[i] != null) {
+            for (Node node : buckets[i]) {
+                if (key.equals(node.key)) {
+                    return node.value;
+                }
             }
         }
         return null;
@@ -72,27 +79,20 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
         if (buckets[h] == null) {
             buckets[h] = createBucket();
             buckets[h].add(createNode(key, value));
-            size += 1;
-            if (size() > buckets.length * maxLoad) {
-                resize();
-            }
         } else {
-            if (!buckets[h].contains(key)) {
-                buckets[h].add(newNode);
-                size += 1;
-                if (size() > buckets.length * maxLoad) {
-                    resize();
-                }
-            } else {
-                for (Node node : buckets[h]) {
-                    if (key.equals(node.key)) {
-                        node.value = value;
-                        break;
-                    }
+            for (Node node : buckets[h]) {
+                if (key.equals(node.key)) {
+                    node.value = value;
+                    return;
                 }
             }
-            }
+            buckets[h].add(newNode);
         }
+        size += 1;
+        if (size() > buckets.length * maxLoad) {
+            resize();
+        }
+    }
 
 
 
@@ -100,9 +100,11 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
     public Set<K> keySet() {
         Set<K> keys = new HashSet<>();
         for (Collection<Node> bucket : buckets) {
-            for (Node node : bucket) {
-                if (node.key != null) {
-                    keys.add(node.key);
+            if (bucket != null) {
+                for (Node node : bucket) {
+                    if (node.key != null) {
+                        keys.add(node.key);
+                    }
                 }
             }
         }
