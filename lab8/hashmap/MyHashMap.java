@@ -1,15 +1,128 @@
 package hashmap;
 
-import java.util.Collection;
+import java.util.*;
 
 /**
  *  A hash table-backed Map implementation. Provides amortized constant time
  *  access to elements via get(), remove(), and put() in the best case.
  *
  *  Assumes null keys will never be inserted, and does not resize down upon remove().
- *  @author YOUR NAME HERE
+ *  @author hachi
  */
 public class MyHashMap<K, V> implements Map61B<K, V> {
+    double maxLoad;
+    int size;
+
+    @Override
+    public void clear() {
+        for (Collection<Node> bucket : buckets) {
+            bucket.clear();
+        }
+    }
+
+    private int hash(K key) {
+        if (key == null) {
+            return 0;
+        } else {
+            return key.hashCode() % size();
+        }
+    }
+
+    @Override
+    public boolean containsKey(K key) {
+        int i = hash(key);
+        for (Node node : buckets[i]) {
+            if (key.equals(node.key)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public V get(K key) {
+        int i = hash(key);
+        for (Node node : buckets[i]) {
+            if (key.equals(node.key)) {
+                return node.value;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public int size() {
+        return size;
+    }
+
+    private void resize() {
+        MyHashMap<K, V> newMap = new MyHashMap<>(buckets.length * 2);
+        for (Collection<Node> bucket : buckets) {
+            if (bucket != null) {
+                for (Node node : bucket) {
+                    newMap.put(node.key, node.value);
+                }
+            }
+        }
+        }
+    @Override
+    public void put(K key, V value) {
+        int h = hash(key);
+        Node newNode = new Node(key, value);
+        if (buckets[h] == null) {
+            buckets[h] = createBucket();
+            buckets[h].add(createNode(key, value));
+            size += 1;
+            if (size() > buckets.length * maxLoad) {
+                resize();
+            }
+        } else {
+            if (!buckets[h].contains(key)) {
+                buckets[h].add(newNode);
+                size += 1;
+                if (size() > buckets.length * maxLoad) {
+                    resize();
+                }
+            } else {
+                for (Node node : buckets[h]) {
+                    if (key.equals(node.key)) {
+                        node.value = value;
+                        break;
+                    }
+                }
+            }
+            }
+        }
+
+
+
+    @Override
+    public Set<K> keySet() {
+        Set<K> keys = new HashSet<>();
+        for (Collection<Node> bucket : buckets) {
+            for (Node node : bucket) {
+                if (node.key != null) {
+                    keys.add(node.key);
+                }
+            }
+        }
+        return keys;
+    }
+
+    @Override
+    public V remove(K key) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public V remove(K key, V value) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Iterator<K> iterator() {
+        return keySet().iterator();
+    }
 
     /**
      * Protected helper class to store key/value pairs
@@ -30,9 +143,13 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
     // You should probably define some more!
 
     /** Constructors */
-    public MyHashMap() { }
+    public MyHashMap() {
+        this(16, 0.75);
+    }
 
-    public MyHashMap(int initialSize) { }
+    public MyHashMap(int initialSize) {
+        this(initialSize, 0.75);
+    }
 
     /**
      * MyHashMap constructor that creates a backing array of initialSize.
@@ -41,13 +158,20 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
      * @param initialSize initial size of backing array
      * @param maxLoad maximum load factor
      */
-    public MyHashMap(int initialSize, double maxLoad) { }
+    public MyHashMap(int initialSize, double maxLoad) {
+        if (initialSize < 1 || maxLoad <= 0.0) {
+            throw new IllegalArgumentException();
+        }
+        buckets = createTable(initialSize);
+        size = 0;
+        this.maxLoad = maxLoad;
+    }
 
     /**
      * Returns a new node to be placed in a hash table bucket
      */
     private Node createNode(K key, V value) {
-        return null;
+        return new Node(key, value);
     }
 
     /**
@@ -69,7 +193,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
      * OWN BUCKET DATA STRUCTURES WITH THE NEW OPERATOR!
      */
     protected Collection<Node> createBucket() {
-        return null;
+        return new LinkedList<>();
     }
 
     /**
@@ -82,8 +206,10 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
      * @param tableSize the size of the table to create
      */
     private Collection<Node>[] createTable(int tableSize) {
-        return null;
+        return new Collection[tableSize];
     }
+
+
 
     // TODO: Implement the methods of the Map61B Interface below
     // Your code won't compile until you do so!
