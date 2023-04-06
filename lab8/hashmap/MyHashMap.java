@@ -20,6 +20,8 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
     private Collection<Node>[] buckets;
     private int size = 0;
 
+    private Set<K> keys;
+
     /**
      * Protected helper class to store key/value pairs
      * The protected qualifier allows subclass access
@@ -27,12 +29,10 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
     protected class Node {
         K key;
         V value;
-        Node next;
 
         Node(K k, V v) {
             key = k;
             value = v;
-            next = null;
         }
     }
 
@@ -55,6 +55,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
     public MyHashMap(int initialSize, double maxLoad) {
         this.initialSize = initialSize;
         this.maxLoad = maxLoad;
+        keys = new HashSet<>();
 
         if (initialSize < 1 || maxLoad <= 0.0) {
             throw new IllegalArgumentException();
@@ -73,6 +74,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
                 bucket.clear();
             }
         }
+        keySet().clear();
         size = 0;
     }
 
@@ -86,7 +88,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
 
     @Override
     public boolean containsKey(K key) {
-        return get(key) != null;
+        return keySet().contains((K)key);
     }
 
     private V getHelper(K key, Collection<Node> bucket) {
@@ -132,6 +134,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
         if (!containsKey(key)) {
             size += 1;
             buckets[h].add(newNode);
+            keySet().add(key);
         } else {
             for (Node node : buckets[h]) {
                 if (key.equals(node.key)) {
@@ -147,16 +150,6 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
 
     @Override
     public Set<K> keySet() {
-        Set<K> keys = new HashSet<>();
-        for (Collection<Node> bucket : buckets) {
-            if (bucket != null) {
-                for (Node node : bucket) {
-                    if (node.key != null) {
-                        keys.add(node.key);
-                    }
-                }
-            }
-        }
         return keys;
     }
 
