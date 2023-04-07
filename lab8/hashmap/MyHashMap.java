@@ -75,7 +75,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
             }
         }
         keySet().clear();
-        size = 0;
+        this.size = 0;
     }
 
     private int hash(K key) {
@@ -114,25 +114,26 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
 
     @Override
     public int size() {
-        return size;
+        return this.size;
     }
 
     private void resize() {
-        MyHashMap<K, V> newMap = new MyHashMap<>(buckets.length * 2);
-        for (Collection<Node> bucket : buckets) {
-            if (bucket != null) {
-                for (Node node : bucket) {
-                    newMap.put(node.key, node.value);
-                }
-            }
+        MyHashMap<K, V> newMap = new MyHashMap<>(initialSize * 2); //ini写了bucket.lengths
+        Set<K> keys = keySet();
+        for (K key : keys) {
+            newMap.put(key, get(key));
         }
-        }
+        initialSize = newMap.initialSize; //一直没有把resize后的的initialSize和buckets改了。
+        buckets = newMap.buckets;
+    }
+
+
     @Override
     public void put(K key, V value) {
         int h = hash(key);
         Node newNode = createNode(key, value);
         if (!containsKey(key)) {
-            size += 1;
+            this.size += 1;
             buckets[h].add(newNode);
             keySet().add(key);
         } else {
@@ -143,7 +144,7 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
                 }
             }
         }
-        if (size() > buckets.length * maxLoad) {
+        if (size() / initialSize > maxLoad) {
             resize();
         }
     }

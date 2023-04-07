@@ -1,0 +1,20 @@
+InsertRandomSpeedTest					
+num	1000	10000	100000	1000000	10000000
+ULLMap	0.01	0.57	0.31	2.12	20.76
+MyHashMap	0.02	0.02	0.01	0.10	1.14
+	0.00	0.00	0.01	0.07	0.78
+
+
+InsertInOrderSpeedTest				
+num		10000	100000	1000000
+ULLMap		0.01	-	-
+MyHashMap	0.09	0.22	3.25
+JavaHashMap	0.01	0.09	1.58
+
+
+	                       10000	100000	1000000	10000000	100000000
+hashmap.MyHashMapALBuckets: 	0.01	0.02	   0.15	    0.74	8.68
+hashmap.MyHashMapLLBuckets: 	0.00	0.02	   0.07	    0.76	7.51
+hashmap.MyHashMapTSBuckets: 	0.01	0.04	   0.08	    0.70	8.91
+hashmap.MyHashMapHSBuckets: 	0.00	0.05	   0.07	    0.69	7.41
+hashmap.MyHashMapPQBuckets: 	0.01	0.08	   0.08	    0.69	7.26
